@@ -16,3 +16,5 @@ implicit-typing = false
 implicit-external = false
 source-form = "free"
 
+[dependencies]
+arithmetic_geometric_mean_fortran = { git = "https://github.com/DSCF-1224/arithmetic_geometric_mean_fortran.git" }
