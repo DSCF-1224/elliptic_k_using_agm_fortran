@@ -5,6 +5,8 @@ module elliptic_k_using_agm_fortran
     use, intrinsic :: iso_fortran_env, only: real64
     use, intrinsic :: iso_fortran_env, only: real128
 
+    use, non_intrinsic :: arithmetic_geometric_mean_fortran
+
 
 
     implicit none
