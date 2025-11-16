@@ -1,5 +1,6 @@
 #:include 'common.fypp'
-module elliptic_k_using_agm_fortran
+#:set MODULE_NAME = 'elliptic_k_using_agm_fortran'
+module ${MODULE_NAME}$
     !! A Fortran library for computing the complete elliptic integral of the first kind using AGM
 
 #:for REAL_KIND in REAL_KINDS
@@ -16,4 +17,4 @@ module elliptic_k_using_agm_fortran
 
     private
 
-end module elliptic_k_using_agm_fortran
+end module ${MODULE_NAME}$
