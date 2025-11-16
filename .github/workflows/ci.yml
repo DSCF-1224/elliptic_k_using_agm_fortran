@@ -32,6 +32,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Run fypp (src)
+        run: |
+          cd src
+          fypp -F elliptic_k_using_agm_fortran.fypp elliptic_k_using_agm_fortran.f90
+          cd ..
+
+      - name: Upload artifacts (src)
+        uses: actions/upload-artifact@v4
+        with:
+          name: src-f90
+          path: src/*.f90
+          retention-days: 1
+
   test:
 
     needs: fypp
