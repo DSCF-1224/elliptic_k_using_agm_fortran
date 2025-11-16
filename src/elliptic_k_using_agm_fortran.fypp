@@ -6,4 +6,12 @@ module elliptic_k_using_agm_fortran
     use, intrinsic :: iso_fortran_env, only: ${REAL_KIND}$
 #:endfor
 
+
+
+    implicit none
+
+
+
+    private
+
 end module elliptic_k_using_agm_fortran
