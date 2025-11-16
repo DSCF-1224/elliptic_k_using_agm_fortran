@@ -18,6 +18,8 @@ module ${MODULE_NAME}$
 
     private
 
+    public :: ${INTERFACE_NAME}$
+
 
 
 #:set MAXVAL_LEN = 0
@@ -30,5 +32,44 @@ module ${MODULE_NAME}$
 #:endfor
 #:del MAXVAL_LEN
 #:del REAL_KIND_LJUST
+
+
+
+    interface ${INTERFACE_NAME}$
+    #:for REAL_KIND in REAL_KINDS
+        module procedure :: ${INTERFACE_NAME}$_${REAL_KIND}$
+    #:endfor
+    end interface ${INTERFACE_NAME}$
+
+
+
+    contains
+#:for REAL_KIND in REAL_KINDS
+
+
+
+    #:set FUNCTION_NAME = INTERFACE_NAME + '_' + REAL_KIND
+    elemental function ${FUNCTION_NAME}$(k) result(integral)
+
+        real(${REAL_KIND}$), intent(in) :: k !! elliptic modulus \( k \)
+
+
+
+        real(${REAL_KIND}$) :: integral ! return value
+
+
+
+        real(${REAL_KIND}$) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
+        real(${REAL_KIND}$) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
+
+
+
+        cmp_k    = 1.0_${REAL_KIND}$ - (k * k)
+        agm_k    = arithmetic_geometric_mean( 1.0_${REAL_KIND}$, cmp_k )
+        integral = half_pi_${REAL_KIND}$ / agm_k
+
+    end function ${FUNCTION_NAME}$
+    #:del FUNCTION_NAME
+#:endfor
 
 end module ${MODULE_NAME}$
