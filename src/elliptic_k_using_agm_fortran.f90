@@ -15,4 +15,10 @@ module elliptic_k_using_agm_fortran
 
     private
 
+
+
+    real( real32  ), parameter :: half_pi_real32  = 1.57079632679489661923132169163975144210_real32
+    real( real64  ), parameter :: half_pi_real64  = 1.57079632679489661923132169163975144210_real64
+    real( real128 ), parameter :: half_pi_real128 = 1.57079632679489661923132169163975144210_real128
+
 end module elliptic_k_using_agm_fortran
