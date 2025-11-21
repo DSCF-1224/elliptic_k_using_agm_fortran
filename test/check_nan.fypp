@@ -1,0 +1,47 @@
+#:include '../src/common.fypp'
+#:set PROGRAM_NAME = 'check_nan'
+program ${PROGRAM_NAME}$
+
+#:for REAL_KIND in REAL_KINDS
+    use, intrinsic :: iso_fortran_env, only: ${REAL_KIND}$
+#:endfor
+
+    use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+
+    use, non_intrinsic :: elliptic_k_using_agm_fortran
+
+    use, non_intrinsic :: ieee_class_fortran
+
+
+
+    implicit none
+
+
+
+#:for REAL_KIND in REAL_KINDS
+    call test_${REAL_KIND}$
+#:endfor
+
+
+
+    contains
+#:for REAL_KIND in REAL_KINDS
+
+
+
+    #:set SUBROUTINE_NAME = 'test_' + REAL_KIND
+    subroutine ${SUBROUTINE_NAME}$
+
+        real(${REAL_KIND}$) :: k
+
+
+
+        call set_ieee_quiet_nan(k)
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
+
+    end subroutine ${SUBROUTINE_NAME}$
+    #:del SUBROUTINE_NAME
+#:endfor
+
+end program ${PROGRAM_NAME}$
