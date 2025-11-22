@@ -1,0 +1,10 @@
+#:set MAXVAL_LEN = 0
+#:for REAL_KIND in REAL_KINDS
+    #:set MAXVAL_LEN = max( MAXVAL_LEN, len(REAL_KIND) )
+#:endfor
+#:for REAL_KIND in REAL_KINDS
+    #:set REAL_KIND_LJUST = REAL_KIND.ljust(MAXVAL_LEN)
+    real( ${REAL_KIND_LJUST}$ ), parameter :: half_pi_${REAL_KIND_LJUST}$ = 1.57079632679489661923132169163975144210_${REAL_KIND}$
+#:endfor
+#:del MAXVAL_LEN
+#:del REAL_KIND_LJUST
