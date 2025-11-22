@@ -1,5 +1,5 @@
 #:include '../src/common.fypp'
-#:set PROGRAM_NAME = 'check_one'
+#:set PROGRAM_NAME = 'check_zero'
 program ${PROGRAM_NAME}$
 
 #:for REAL_KIND in REAL_KINDS
