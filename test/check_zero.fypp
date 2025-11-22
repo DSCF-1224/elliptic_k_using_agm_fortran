@@ -1,0 +1,49 @@
+#:include '../src/common.fypp'
+#:set PROGRAM_NAME = 'check_one'
+program ${PROGRAM_NAME}$
+
+#:for REAL_KIND in REAL_KINDS
+    use, intrinsic :: iso_fortran_env, only: ${REAL_KIND}$
+#:endfor
+
+    use, non_intrinsic :: elliptic_k_using_agm_fortran
+
+    use, non_intrinsic :: ieee_class_fortran
+
+
+
+    implicit none
+
+
+
+#:include '../src/half_pi.fypp'
+
+
+
+#:for REAL_KIND in REAL_KINDS
+    call test_${REAL_KIND}$
+#:endfor
+
+
+
+    contains
+#:for REAL_KIND in REAL_KINDS
+
+
+
+    #:set SUBROUTINE_NAME = 'test_' + REAL_KIND
+    subroutine ${SUBROUTINE_NAME}$
+
+        real(${REAL_KIND}$) :: err
+
+
+
+        err = elliptic_k(0.0_${REAL_KIND}$) - half_pi_${REAL_KIND}$
+
+        if ( .not. is_ieee_positive_zero(err) ) error stop
+
+    end subroutine ${SUBROUTINE_NAME}$
+    #:del SUBROUTINE_NAME
+#:endfor
+
+end program ${PROGRAM_NAME}$
