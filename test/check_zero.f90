@@ -1,4 +1,4 @@
-program check_one
+program check_zero
 
     use, intrinsic :: iso_fortran_env, only: real32
     use, intrinsic :: iso_fortran_env, only: real64
@@ -70,4 +70,4 @@ program check_one
 
     end subroutine test_real128
 
-end program check_one
+end program check_zero

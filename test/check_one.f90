@@ -4,8 +4,6 @@ program check_one
     use, intrinsic :: iso_fortran_env, only: real64
     use, intrinsic :: iso_fortran_env, only: real128
 
-    use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-
     use, non_intrinsic :: elliptic_k_using_agm_fortran
 
     use, non_intrinsic :: ieee_class_fortran
