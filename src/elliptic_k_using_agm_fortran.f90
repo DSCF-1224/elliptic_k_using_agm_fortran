@@ -52,7 +52,7 @@ module elliptic_k_using_agm_fortran
 
 
 
-        cmp_k    = sqrt( 1.0_real32 - (k * k) )
+        cmp_k    = sqrt( (1.0_real32 - k) * (1.0_real32 + k) )
         agm_k    = arithmetic_geometric_mean( 1.0_real32, cmp_k )
         integral = half_pi_real32 / agm_k
 
@@ -75,7 +75,7 @@ module elliptic_k_using_agm_fortran
 
 
 
-        cmp_k    = sqrt( 1.0_real64 - (k * k) )
+        cmp_k    = sqrt( (1.0_real64 - k) * (1.0_real64 + k) )
         agm_k    = arithmetic_geometric_mean( 1.0_real64, cmp_k )
         integral = half_pi_real64 / agm_k
 
@@ -98,7 +98,7 @@ module elliptic_k_using_agm_fortran
 
 
 
-        cmp_k    = sqrt( 1.0_real128 - (k * k) )
+        cmp_k    = sqrt( (1.0_real128 - k) * (1.0_real128 + k) )
         agm_k    = arithmetic_geometric_mean( 1.0_real128, cmp_k )
         integral = half_pi_real128 / agm_k
 
