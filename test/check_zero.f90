@@ -32,11 +32,21 @@ program check_zero
 
     subroutine test_real32
 
-        real(real32) :: err
+        real(real32) :: err, k
 
 
 
-        err = elliptic_k(0.0_real32) - half_pi_real32
+        call set_ieee_positive_zero(k)
+
+        err = elliptic_k(k) - half_pi_real32
+
+        if ( .not. is_ieee_positive_zero(err) ) error stop
+
+
+
+        call set_ieee_negative_zero(k)
+
+        err = elliptic_k(k) - half_pi_real32
 
         if ( .not. is_ieee_positive_zero(err) ) error stop
 
@@ -46,11 +56,21 @@ program check_zero
 
     subroutine test_real64
 
-        real(real64) :: err
+        real(real64) :: err, k
 
 
 
-        err = elliptic_k(0.0_real64) - half_pi_real64
+        call set_ieee_positive_zero(k)
+
+        err = elliptic_k(k) - half_pi_real64
+
+        if ( .not. is_ieee_positive_zero(err) ) error stop
+
+
+
+        call set_ieee_negative_zero(k)
+
+        err = elliptic_k(k) - half_pi_real64
 
         if ( .not. is_ieee_positive_zero(err) ) error stop
 
@@ -60,11 +80,21 @@ program check_zero
 
     subroutine test_real128
 
-        real(real128) :: err
+        real(real128) :: err, k
 
 
 
-        err = elliptic_k(0.0_real128) - half_pi_real128
+        call set_ieee_positive_zero(k)
+
+        err = elliptic_k(k) - half_pi_real128
+
+        if ( .not. is_ieee_positive_zero(err) ) error stop
+
+
+
+        call set_ieee_negative_zero(k)
+
+        err = elliptic_k(k) - half_pi_real128
 
         if ( .not. is_ieee_positive_zero(err) ) error stop
 
