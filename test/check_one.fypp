@@ -45,6 +45,16 @@ program ${PROGRAM_NAME}$
 
         if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
 
+
+
+        k = -1.0_${REAL_KIND}$
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = ( - huge(k) ) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
+
     end subroutine ${SUBROUTINE_NAME}$
     #:del SUBROUTINE_NAME
 #:endfor
