@@ -165,27 +165,6 @@ program ${PROGRAM_NAME}$
 
 
 
-                if ( ulp_error_abs .gt. 2.0_${REAL_KIND}$ ) then
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'WARNING: Large ULP error'
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'k               = ' , k
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(ref) = ' ,  elliptic_k_ref
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(cal) = ' ,  elliptic_k_cal
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'ULP error       = ' ,  ulp_error
-
-                end if
-
-
-
                 if ( ulp_error_abs .gt. 10.0_${REAL_KIND}$ ) then
 
                     write( unit = error_unit, fmt = * ) &!
@@ -207,6 +186,26 @@ program ${PROGRAM_NAME}$
 
                 end if
 
+
+
+                if ( ulp_error_abs .gt. 2.0_${REAL_KIND}$ ) then
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'WARNING: Large ULP error'
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'k               = ' , k
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'elliptic_k(ref) = ' ,  elliptic_k_ref
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'elliptic_k(cal) = ' ,  elliptic_k_cal
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'ULP error       = ' ,  ulp_error
+
+                end if
 
             else
 
