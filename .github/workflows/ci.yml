@@ -44,6 +44,7 @@ jobs:
           fypp -F check_nan.fypp check_nan.f90
           fypp -F check_one.fypp check_one.f90
           fypp -F check_reference0.fypp check_reference0.f90
+          fypp -F check_reference1.fypp check_reference1.f90
           fypp -F check_zero.fypp check_zero.f90
           cd ..
 
