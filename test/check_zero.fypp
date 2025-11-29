@@ -34,11 +34,21 @@ program ${PROGRAM_NAME}$
     #:set SUBROUTINE_NAME = 'test_' + REAL_KIND
     subroutine ${SUBROUTINE_NAME}$
 
-        real(${REAL_KIND}$) :: err
+        real(${REAL_KIND}$) :: err, k
 
 
 
-        err = elliptic_k(0.0_${REAL_KIND}$) - half_pi_${REAL_KIND}$
+        call set_ieee_positive_zero(k)
+
+        err = elliptic_k(k) - half_pi_${REAL_KIND}$
+
+        if ( .not. is_ieee_positive_zero(err) ) error stop
+
+
+
+        call set_ieee_negative_zero(k)
+
+        err = elliptic_k(k) - half_pi_${REAL_KIND}$
 
         if ( .not. is_ieee_positive_zero(err) ) error stop
 

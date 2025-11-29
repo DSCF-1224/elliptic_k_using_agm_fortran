@@ -4,6 +4,9 @@ program check_one
     use, intrinsic :: iso_fortran_env, only: real64
     use, intrinsic :: iso_fortran_env, only: real128
 
+    use, intrinsic :: ieee_arithmetic, only: ieee_next_after
+    use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+
     use, non_intrinsic :: elliptic_k_using_agm_fortran
 
     use, non_intrinsic :: ieee_class_fortran
@@ -26,7 +29,27 @@ program check_one
 
     subroutine test_real32
 
-        if ( .not. is_ieee_positive_inf( elliptic_k(1.0_real32) ) ) error stop
+        real(real32) :: k
+
+
+
+        k = 1.0_real32
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = huge(k) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
+
+
+
+        k = -1.0_real32
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = ( - huge(k) ) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
 
     end subroutine test_real32
 
@@ -34,7 +57,27 @@ program check_one
 
     subroutine test_real64
 
-        if ( .not. is_ieee_positive_inf( elliptic_k(1.0_real64) ) ) error stop
+        real(real64) :: k
+
+
+
+        k = 1.0_real64
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = huge(k) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
+
+
+
+        k = -1.0_real64
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = ( - huge(k) ) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
 
     end subroutine test_real64
 
@@ -42,7 +85,27 @@ program check_one
 
     subroutine test_real128
 
-        if ( .not. is_ieee_positive_inf( elliptic_k(1.0_real128) ) ) error stop
+        real(real128) :: k
+
+
+
+        k = 1.0_real128
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = huge(k) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
+
+
+
+        k = -1.0_real128
+
+        if ( .not. is_ieee_positive_inf( elliptic_k(k) ) ) error stop
+
+        k = ieee_next_after( x = k, y = ( - huge(k) ) )
+
+        if ( .not. ieee_is_nan( elliptic_k(k) ) ) error stop
 
     end subroutine test_real128
 

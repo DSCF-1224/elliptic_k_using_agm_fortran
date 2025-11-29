@@ -1,4 +1,4 @@
-program check_reference0
+program check_reference1
 
     use, intrinsic :: iso_fortran_env, only: error_unit
     use, intrinsic :: iso_fortran_env, only: real32
@@ -13,7 +13,7 @@ program check_reference0
 
 
 
-    character(*), parameter :: reference_file = 'test/reference0.csv'
+    character(*), parameter :: reference_file = 'test/reference1.csv'
 
 
 
@@ -111,8 +111,6 @@ program check_reference0
 
         real(real32) :: k
 
-        real(real32) :: temp
-
         real(real32) :: ulp_error
 
         real(real32) :: ulp_error_abs
@@ -149,10 +147,9 @@ program check_reference0
                 call handle_stat(stat, msg)
             end if
 
-            cnt  = cnt + 1
-            temp = 1.0_real32 - (k * k)
+            cnt = cnt + 1
 
-            if (temp .lt. 1.0_real32) then
+            if ( (k .lt. 1.0_real32) .and. ( (1 - k) .ge. epsilon(k) ) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
@@ -239,8 +236,6 @@ program check_reference0
 
         real(real64) :: k
 
-        real(real64) :: temp
-
         real(real64) :: ulp_error
 
         real(real64) :: ulp_error_abs
@@ -277,10 +272,9 @@ program check_reference0
                 call handle_stat(stat, msg)
             end if
 
-            cnt  = cnt + 1
-            temp = 1.0_real64 - (k * k)
+            cnt = cnt + 1
 
-            if (temp .lt. 1.0_real64) then
+            if ( (k .lt. 1.0_real64) .and. ( (1 - k) .ge. epsilon(k) ) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
@@ -367,8 +361,6 @@ program check_reference0
 
         real(real128) :: k
 
-        real(real128) :: temp
-
         real(real128) :: ulp_error
 
         real(real128) :: ulp_error_abs
@@ -405,10 +397,9 @@ program check_reference0
                 call handle_stat(stat, msg)
             end if
 
-            cnt  = cnt + 1
-            temp = 1.0_real128 - (k * k)
+            cnt = cnt + 1
 
-            if (temp .lt. 1.0_real128) then
+            if ( (k .lt. 1.0_real128) .and. ( (1 - k) .ge. epsilon(k) ) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
@@ -477,4 +468,4 @@ program check_reference0
 
     end subroutine test_real128
 
-end program check_reference0
+end program check_reference1
