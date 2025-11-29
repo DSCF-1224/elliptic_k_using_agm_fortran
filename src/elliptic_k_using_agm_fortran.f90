@@ -5,6 +5,11 @@ module elliptic_k_using_agm_fortran
     use, intrinsic :: iso_fortran_env, only: real64
     use, intrinsic :: iso_fortran_env, only: real128
 
+    use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+    use, intrinsic :: ieee_arithmetic, only: ieee_positive_inf
+    use, intrinsic :: ieee_arithmetic, only: ieee_quiet_nan
+    use, intrinsic :: ieee_arithmetic, only: ieee_value
+
     use, non_intrinsic :: arithmetic_geometric_mean_fortran
 
 
@@ -47,14 +52,41 @@ module elliptic_k_using_agm_fortran
 
 
 
+        real(real32) :: abs_k
         real(real32) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(real32) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
 
 
 
-        cmp_k    = sqrt( (1.0_real32 - k) * (1.0_real32 + k) )
-        agm_k    = arithmetic_geometric_mean( 1.0_real32, cmp_k )
-        integral = half_pi_real32 / agm_k
+        if ( ieee_is_nan(k) ) then
+
+            integral = ieee_value( x = k, class = ieee_quiet_nan )
+
+            return
+
+        end if
+
+
+
+        abs_k = abs(k)
+
+
+
+        if (abs_k .gt. 1.0_real32) then
+
+            integral = ieee_value( x = k, class = ieee_quiet_nan )
+
+        else if (abs_k .lt. 1.0_real32) then
+
+            cmp_k    = sqrt( (1.0_real32 - k) * (1.0_real32 + k) )
+            agm_k    = arithmetic_geometric_mean_kernel( 1.0_real32, cmp_k )
+            integral = half_pi_real32 / agm_k
+
+        else
+
+            integral = ieee_value( x = k, class = ieee_positive_inf )
+
+        end if
 
     end function elliptic_k_real32
 
@@ -70,14 +102,41 @@ module elliptic_k_using_agm_fortran
 
 
 
+        real(real64) :: abs_k
         real(real64) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(real64) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
 
 
 
-        cmp_k    = sqrt( (1.0_real64 - k) * (1.0_real64 + k) )
-        agm_k    = arithmetic_geometric_mean( 1.0_real64, cmp_k )
-        integral = half_pi_real64 / agm_k
+        if ( ieee_is_nan(k) ) then
+
+            integral = ieee_value( x = k, class = ieee_quiet_nan )
+
+            return
+
+        end if
+
+
+
+        abs_k = abs(k)
+
+
+
+        if (abs_k .gt. 1.0_real64) then
+
+            integral = ieee_value( x = k, class = ieee_quiet_nan )
+
+        else if (abs_k .lt. 1.0_real64) then
+
+            cmp_k    = sqrt( (1.0_real64 - k) * (1.0_real64 + k) )
+            agm_k    = arithmetic_geometric_mean_kernel( 1.0_real64, cmp_k )
+            integral = half_pi_real64 / agm_k
+
+        else
+
+            integral = ieee_value( x = k, class = ieee_positive_inf )
+
+        end if
 
     end function elliptic_k_real64
 
@@ -93,14 +152,41 @@ module elliptic_k_using_agm_fortran
 
 
 
+        real(real128) :: abs_k
         real(real128) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(real128) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
 
 
 
-        cmp_k    = sqrt( (1.0_real128 - k) * (1.0_real128 + k) )
-        agm_k    = arithmetic_geometric_mean( 1.0_real128, cmp_k )
-        integral = half_pi_real128 / agm_k
+        if ( ieee_is_nan(k) ) then
+
+            integral = ieee_value( x = k, class = ieee_quiet_nan )
+
+            return
+
+        end if
+
+
+
+        abs_k = abs(k)
+
+
+
+        if (abs_k .gt. 1.0_real128) then
+
+            integral = ieee_value( x = k, class = ieee_quiet_nan )
+
+        else if (abs_k .lt. 1.0_real128) then
+
+            cmp_k    = sqrt( (1.0_real128 - k) * (1.0_real128 + k) )
+            agm_k    = arithmetic_geometric_mean_kernel( 1.0_real128, cmp_k )
+            integral = half_pi_real128 / agm_k
+
+        else
+
+            integral = ieee_value( x = k, class = ieee_positive_inf )
+
+        end if
 
     end function elliptic_k_real128
 
