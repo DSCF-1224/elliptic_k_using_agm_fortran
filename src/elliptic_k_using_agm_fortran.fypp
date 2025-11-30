@@ -31,6 +31,18 @@ module ${MODULE_NAME}$
 
 #:include 'half_pi.fypp'
 
+#:set MAXVAL_LEN = 0
+#:for REAL_KIND in REAL_KINDS
+    #:set MAXVAL_LEN = max( MAXVAL_LEN, len(REAL_KIND) )
+#:endfor
+#:for REAL_KIND in REAL_KINDS
+    #:set REAL_KIND_LJUST = REAL_KIND.ljust(MAXVAL_LEN)
+    real( ${REAL_KIND_LJUST}$ ), parameter :: mns_inv_pi_${REAL_KIND_LJUST}$ = -0.318309886183790671537767526745028724069_${REAL_KIND}$
+#:endfor
+#:del MAXVAL_LEN
+#:del REAL_KIND_LJUST
+
+
 
 
     interface ${INTERFACE_NAME}$
@@ -60,6 +72,8 @@ module ${MODULE_NAME}$
         real(${REAL_KIND}$) :: abs_k
         real(${REAL_KIND}$) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(${REAL_KIND}$) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
+        real(${REAL_KIND}$) :: nom_k !! nome \( q \) for elliptic integrals corresponding to modulus \( k \)
+        real(${REAL_KIND}$) :: tmp
 
 
 
@@ -83,9 +97,21 @@ module ${MODULE_NAME}$
 
         else if (abs_k .lt. 1.0_${REAL_KIND}$) then
 
-            cmp_k    = sqrt( (1.0_${REAL_KIND}$ - k) * (1.0_${REAL_KIND}$ + k) )
-            agm_k    = arithmetic_geometric_mean_kernel( 1.0_${REAL_KIND}$, cmp_k )
-            integral = half_pi_${REAL_KIND}$ / agm_k
+            cmp_k = sqrt( (1.0_${REAL_KIND}$ - k) * (1.0_${REAL_KIND}$ + k) )
+
+            if ( (k * k) .lt. 0.5_${REAL_KIND}$ ) then
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_${REAL_KIND}$, cmp_k)
+                integral = half_pi_${REAL_KIND}$ / agm_k
+
+            else
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_${REAL_KIND}$, k)
+                tmp      = half_pi_${REAL_KIND}$ / agm_k
+                nom_k    = elliptic_nome_auto(cmp_k)
+                integral = mns_inv_pi_${REAL_KIND}$ * tmp * log(nom_k)
+
+            end if
 
         else
 
