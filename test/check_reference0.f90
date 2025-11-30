@@ -97,6 +97,8 @@ program check_reference0
 
     subroutine test_real32
 
+        logical :: flag_error_stop
+
         integer :: file_unit
 
         integer :: line
@@ -127,7 +129,8 @@ program check_reference0
 
 
 
-        line = 0
+        flag_error_stop = .false.
+        line            = 0
 
 
 
@@ -158,36 +161,23 @@ program check_reference0
 
 
 
-            if ( ulp_error_abs .gt. 10.0_real32 ) then
-
-                write( unit = error_unit, fmt = * ) &!
-                    'FAIL: Unacceptable error'
-
-                write( unit = error_unit, fmt = * ) &!
-                    'line            = ' , line
-
-                write( unit = error_unit, fmt = * ) &!
-                    'k               = ' , k
-
-                write( unit = error_unit, fmt = * ) &!
-                    'elliptic_k(ref) = ' ,  elliptic_k_ref
-
-                write( unit = error_unit, fmt = * ) &!
-                    'elliptic_k(cal) = ' ,  elliptic_k_cal
-
-                write( unit = error_unit, fmt = * ) &!
-                    'ULP error       = ' ,  ulp_error
-
-                error stop
-
-            end if
-
-
-
             if ( ulp_error_abs .gt. 2.0_real32 ) then
 
-                write( unit = error_unit, fmt = * ) &!
-                    'WARNING: Large ULP error'
+                if ( ulp_error_abs .gt. 10.0_real32 ) then
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'FAIL: Unacceptable error'
+
+                    flag_error_stop = .true.
+
+                else
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'WARNING: Large ULP error'
+
+                end if
+
+
 
                 write( unit = error_unit, fmt = * ) &!
                     'k               = ' , k
@@ -203,6 +193,10 @@ program check_reference0
 
                 write( unit = error_unit, fmt = * ) &!
                     'ULP error       = ' ,  ulp_error
+
+
+
+                if (flag_error_stop) error stop
 
             end if
 
@@ -221,6 +215,8 @@ program check_reference0
 
 
     subroutine test_real64
+
+        logical :: flag_error_stop
 
         integer :: file_unit
 
@@ -252,7 +248,8 @@ program check_reference0
 
 
 
-        line = 0
+        flag_error_stop = .false.
+        line            = 0
 
 
 
@@ -283,36 +280,23 @@ program check_reference0
 
 
 
-            if ( ulp_error_abs .gt. 10.0_real64 ) then
-
-                write( unit = error_unit, fmt = * ) &!
-                    'FAIL: Unacceptable error'
-
-                write( unit = error_unit, fmt = * ) &!
-                    'line            = ' , line
-
-                write( unit = error_unit, fmt = * ) &!
-                    'k               = ' , k
-
-                write( unit = error_unit, fmt = * ) &!
-                    'elliptic_k(ref) = ' ,  elliptic_k_ref
-
-                write( unit = error_unit, fmt = * ) &!
-                    'elliptic_k(cal) = ' ,  elliptic_k_cal
-
-                write( unit = error_unit, fmt = * ) &!
-                    'ULP error       = ' ,  ulp_error
-
-                error stop
-
-            end if
-
-
-
             if ( ulp_error_abs .gt. 2.0_real64 ) then
 
-                write( unit = error_unit, fmt = * ) &!
-                    'WARNING: Large ULP error'
+                if ( ulp_error_abs .gt. 10.0_real64 ) then
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'FAIL: Unacceptable error'
+
+                    flag_error_stop = .true.
+
+                else
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'WARNING: Large ULP error'
+
+                end if
+
+
 
                 write( unit = error_unit, fmt = * ) &!
                     'k               = ' , k
@@ -328,6 +312,10 @@ program check_reference0
 
                 write( unit = error_unit, fmt = * ) &!
                     'ULP error       = ' ,  ulp_error
+
+
+
+                if (flag_error_stop) error stop
 
             end if
 
@@ -346,6 +334,8 @@ program check_reference0
 
 
     subroutine test_real128
+
+        logical :: flag_error_stop
 
         integer :: file_unit
 
@@ -377,7 +367,8 @@ program check_reference0
 
 
 
-        line = 0
+        flag_error_stop = .false.
+        line            = 0
 
 
 
@@ -408,36 +399,23 @@ program check_reference0
 
 
 
-            if ( ulp_error_abs .gt. 10.0_real128 ) then
-
-                write( unit = error_unit, fmt = * ) &!
-                    'FAIL: Unacceptable error'
-
-                write( unit = error_unit, fmt = * ) &!
-                    'line            = ' , line
-
-                write( unit = error_unit, fmt = * ) &!
-                    'k               = ' , k
-
-                write( unit = error_unit, fmt = * ) &!
-                    'elliptic_k(ref) = ' ,  elliptic_k_ref
-
-                write( unit = error_unit, fmt = * ) &!
-                    'elliptic_k(cal) = ' ,  elliptic_k_cal
-
-                write( unit = error_unit, fmt = * ) &!
-                    'ULP error       = ' ,  ulp_error
-
-                error stop
-
-            end if
-
-
-
             if ( ulp_error_abs .gt. 2.0_real128 ) then
 
-                write( unit = error_unit, fmt = * ) &!
-                    'WARNING: Large ULP error'
+                if ( ulp_error_abs .gt. 10.0_real128 ) then
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'FAIL: Unacceptable error'
+
+                    flag_error_stop = .true.
+
+                else
+
+                    write( unit = error_unit, fmt = * ) &!
+                        'WARNING: Large ULP error'
+
+                end if
+
+
 
                 write( unit = error_unit, fmt = * ) &!
                     'k               = ' , k
@@ -453,6 +431,10 @@ program check_reference0
 
                 write( unit = error_unit, fmt = * ) &!
                     'ULP error       = ' ,  ulp_error
+
+
+
+                if (flag_error_stop) error stop
 
             end if
 
