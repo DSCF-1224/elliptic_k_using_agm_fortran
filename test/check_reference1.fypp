@@ -160,7 +160,7 @@ program ${PROGRAM_NAME}$
 
 
 
-            if ( (k .lt. 1.0_${REAL_KIND}$) .and. ( (1 - k) .ge. epsilon(k) ) ) then
+            if ( (1 - k) .ge. epsilon(k) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
