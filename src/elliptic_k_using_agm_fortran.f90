@@ -12,6 +12,8 @@ module elliptic_k_using_agm_fortran
 
     use, non_intrinsic :: arithmetic_geometric_mean_fortran
 
+    use, non_intrinsic :: elliptic_nome_fortran
+
 
 
     implicit none
