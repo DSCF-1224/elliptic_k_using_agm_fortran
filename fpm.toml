@@ -18,6 +18,7 @@ source-form = "free"
 
 [dependencies]
 arithmetic_geometric_mean_fortran = { git = "https://github.com/DSCF-1224/arithmetic_geometric_mean_fortran.git" }
+elliptic_nome_fortran             = { git = "https://github.com/DSCF-1224/elliptic_nome_fortran.git" }
 
 [[test]]
 name = "compiler"
