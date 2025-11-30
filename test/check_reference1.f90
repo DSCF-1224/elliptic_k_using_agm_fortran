@@ -156,7 +156,7 @@ program check_reference1
 
 
 
-            if ( (k .lt. 1.0_real32) .and. ( (1 - k) .ge. epsilon(k) ) ) then
+            if ( (1 - k) .ge. epsilon(k) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
@@ -285,7 +285,7 @@ program check_reference1
 
 
 
-            if ( (k .lt. 1.0_real64) .and. ( (1 - k) .ge. epsilon(k) ) ) then
+            if ( (1 - k) .ge. epsilon(k) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
@@ -414,7 +414,7 @@ program check_reference1
 
 
 
-            if ( (k .lt. 1.0_real128) .and. ( (1 - k) .ge. epsilon(k) ) ) then
+            if ( (1 - k) .ge. epsilon(k) ) then
 
                 elliptic_k_cal = elliptic_k(k)
                 elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
