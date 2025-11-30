@@ -101,9 +101,9 @@ program ${PROGRAM_NAME}$
     #:set SUBROUTINE_NAME = 'test_' + REAL_KIND
     subroutine ${SUBROUTINE_NAME}$
 
-        integer :: cnt
-
         integer :: file_unit
+
+        integer :: line
 
         integer :: stat
 
@@ -114,8 +114,6 @@ program ${PROGRAM_NAME}$
         real(${REAL_KIND}$) :: elliptic_k_ref
 
         real(${REAL_KIND}$) :: k
-
-        real(${REAL_KIND}$) :: temp
 
         real(${REAL_KIND}$) :: ulp_error
 
@@ -133,7 +131,7 @@ program ${PROGRAM_NAME}$
 
 
 
-        cnt = 0
+        line = 0
 
 
 
@@ -153,63 +151,62 @@ program ${PROGRAM_NAME}$
                 call handle_stat(stat, msg)
             end if
 
-            cnt  = cnt + 1
-            temp = 1.0_${REAL_KIND}$ - (k * k)
-
-            if (temp .lt. 1.0_${REAL_KIND}$) then
-
-                elliptic_k_cal = elliptic_k(k)
-                elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
-                ulp_error      = elliptic_k_dif / spacing(elliptic_k_ref)
-                ulp_error_abs  = abs(ulp_error)
 
 
+            line           = line + 1
 
-                if ( ulp_error_abs .gt. 10.0_${REAL_KIND}$ ) then
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'FAIL: Unacceptable error'
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'k               = ' , k
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(ref) = ' ,  elliptic_k_ref
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(cal) = ' ,  elliptic_k_cal
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'ULP error       = ' ,  ulp_error
-
-                    error stop
-
-                end if
+            elliptic_k_cal = elliptic_k(k)
+            elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
+            ulp_error      = elliptic_k_dif / spacing(elliptic_k_ref)
+            ulp_error_abs  = abs(ulp_error)
 
 
 
-                if ( ulp_error_abs .gt. 2.0_${REAL_KIND}$ ) then
+            if ( ulp_error_abs .gt. 10.0_${REAL_KIND}$ ) then
 
-                    write( unit = error_unit, fmt = * ) &!
-                        'WARNING: Large ULP error'
+                write( unit = error_unit, fmt = * ) &!
+                    'FAIL: Unacceptable error'
 
-                    write( unit = error_unit, fmt = * ) &!
-                        'k               = ' , k
+                write( unit = error_unit, fmt = * ) &!
+                    'line            = ' , line
 
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(ref) = ' ,  elliptic_k_ref
+                write( unit = error_unit, fmt = * ) &!
+                    'k               = ' , k
 
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(cal) = ' ,  elliptic_k_cal
+                write( unit = error_unit, fmt = * ) &!
+                    'elliptic_k(ref) = ' ,  elliptic_k_ref
 
-                    write( unit = error_unit, fmt = * ) &!
-                        'ULP error       = ' ,  ulp_error
+                write( unit = error_unit, fmt = * ) &!
+                    'elliptic_k(cal) = ' ,  elliptic_k_cal
 
-                end if
+                write( unit = error_unit, fmt = * ) &!
+                    'ULP error       = ' ,  ulp_error
 
-            else
+                error stop
 
-                cycle
+            end if
+
+
+
+            if ( ulp_error_abs .gt. 2.0_${REAL_KIND}$ ) then
+
+                write( unit = error_unit, fmt = * ) &!
+                    'WARNING: Large ULP error'
+
+                write( unit = error_unit, fmt = * ) &!
+                    'k               = ' , k
+
+                write( unit = error_unit, fmt = * ) &!
+                    'line            = ' , line
+
+                write( unit = error_unit, fmt = * ) &!
+                    'elliptic_k(ref) = ' ,  elliptic_k_ref
+
+                write( unit = error_unit, fmt = * ) &!
+                    'elliptic_k(cal) = ' ,  elliptic_k_cal
+
+                write( unit = error_unit, fmt = * ) &!
+                    'ULP error       = ' ,  ulp_error
 
             end if
 
