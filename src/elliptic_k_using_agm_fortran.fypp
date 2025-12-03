@@ -2,7 +2,14 @@
 #:set INTERFACE_NAME = 'elliptic_k'
 #:set MODULE_NAME = INTERFACE_NAME + '_using_agm_fortran'
 module ${MODULE_NAME}$
-    !! A Fortran library for computing the complete elliptic integral of the first kind using AGM
+    !! A Fortran library for computing the complete elliptic integral of the first kind \( K(k) \)
+    !! using arithmetic-geometric mean (AGM)
+    !! 
+    !! \( K(k) \) is defined as
+    !! $$
+    !! K (k) := \int_{ 0 }^{ \pi / 2 } \frac{ d \theta }{ \sqrt{ 1 - { k }^{ 2 } \sin^{ 2 } \theta } } 
+    !! $$
+    !! where \( k \) is the elliptic modulus.
 
 #:for REAL_KIND in REAL_KINDS
     use, intrinsic :: iso_fortran_env, only: ${REAL_KIND}$
@@ -46,6 +53,7 @@ module ${MODULE_NAME}$
 
 
     interface ${INTERFACE_NAME}$
+    #:include 'elliptic_k_description.fypp'
     #:for REAL_KIND in REAL_KINDS
         module procedure :: ${INTERFACE_NAME}$_${REAL_KIND}$
     #:endfor
@@ -60,12 +68,19 @@ module ${MODULE_NAME}$
 
     #:set FUNCTION_NAME = INTERFACE_NAME + '_' + REAL_KIND
     elemental function ${FUNCTION_NAME}$(k) result(integral)
+    #:include 'elliptic_k_description.fypp'
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(${REAL_KIND}$), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(${REAL_KIND}$) :: integral ! return value
+        real(${REAL_KIND}$) :: integral !! \( K(k) \)
 
 
 

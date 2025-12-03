@@ -1,0 +1,7 @@
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
