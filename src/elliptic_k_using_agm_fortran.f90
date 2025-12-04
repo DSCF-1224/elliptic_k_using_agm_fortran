@@ -1,5 +1,21 @@
 module elliptic_k_using_agm_fortran
-    !! A Fortran library for computing the complete elliptic integral of the first kind using AGM
+    !! A Fortran library for computing the complete elliptic integral of the first kind \( K(k) \)
+    !! using arithmetic-geometric mean (AGM)
+    !! 
+    !! \( K(k) \) is defined as
+    !! $$
+    !! K (k) := \int_{ 0 }^{ \pi / 2 } \frac{ d \theta }{ \sqrt{ 1 - { k }^{ 2 } \sin^{ 2 } \theta } } 
+    !! $$
+    !! where \( k \) is the elliptic modulus.
+    !!
+    !! @note
+    !! - 山内二郎, 宇野利雄, 一松信 共編  
+    !!   電子計算機のための数値計算法 3  
+    !!   培風館, 1972.  
+    !!   数理科学シリーズ ; 5  
+    !!   [NDLサーチ](https://ndlsearch.ndl.go.jp/books/R100000039-I2422322)
+    !! - [Elliptic integral#Complete elliptic integral of the first kind - Wikipedia](https://en.wikipedia.org/wiki/Elliptic_integral#Complete_elliptic_integral_of_the_first_kind)
+    !! @endnote
 
     use, intrinsic :: iso_fortran_env, only: real32
     use, intrinsic :: iso_fortran_env, only: real64
@@ -11,6 +27,8 @@ module elliptic_k_using_agm_fortran
     use, intrinsic :: ieee_arithmetic, only: ieee_value
 
     use, non_intrinsic :: arithmetic_geometric_mean_fortran
+
+    use, non_intrinsic :: elliptic_nome_fortran
 
 
 
@@ -28,9 +46,21 @@ module elliptic_k_using_agm_fortran
     real( real64  ), parameter :: half_pi_real64  = 1.57079632679489661923132169163975144210_real64
     real( real128 ), parameter :: half_pi_real128 = 1.57079632679489661923132169163975144210_real128
 
+    real( real32  ), parameter :: mns_inv_pi_real32  = -0.318309886183790671537767526745028724069_real32
+    real( real64  ), parameter :: mns_inv_pi_real64  = -0.318309886183790671537767526745028724069_real64
+    real( real128 ), parameter :: mns_inv_pi_real128 = -0.318309886183790671537767526745028724069_real128
+
+
 
 
     interface elliptic_k
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
         module procedure :: elliptic_k_real32
         module procedure :: elliptic_k_real64
         module procedure :: elliptic_k_real128
@@ -43,18 +73,33 @@ module elliptic_k_using_agm_fortran
 
 
     elemental function elliptic_k_real32(k) result(integral)
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(real32), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(real32) :: integral ! return value
+        real(real32) :: integral !! \( K(k) \)
 
 
 
         real(real32) :: abs_k
         real(real32) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(real32) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
+        real(real32) :: nom_k !! nome \( q \) for elliptic integrals corresponding to modulus \( k \)
+        real(real32) :: tmp
 
 
 
@@ -78,9 +123,21 @@ module elliptic_k_using_agm_fortran
 
         else if (abs_k .lt. 1.0_real32) then
 
-            cmp_k    = sqrt( (1.0_real32 - k) * (1.0_real32 + k) )
-            agm_k    = arithmetic_geometric_mean_kernel( 1.0_real32, cmp_k )
-            integral = half_pi_real32 / agm_k
+            cmp_k = sqrt( (1.0_real32 - k) * (1.0_real32 + k) )
+
+            if ( (k * k) .lt. 0.5_real32 ) then
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_real32, cmp_k)
+                integral = half_pi_real32 / agm_k
+
+            else
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_real32, k)
+                tmp      = half_pi_real32 / agm_k
+                nom_k    = elliptic_nome_auto(cmp_k)
+                integral = mns_inv_pi_real32 * tmp * log(nom_k)
+
+            end if
 
         else
 
@@ -93,18 +150,33 @@ module elliptic_k_using_agm_fortran
 
 
     elemental function elliptic_k_real64(k) result(integral)
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(real64), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(real64) :: integral ! return value
+        real(real64) :: integral !! \( K(k) \)
 
 
 
         real(real64) :: abs_k
         real(real64) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(real64) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
+        real(real64) :: nom_k !! nome \( q \) for elliptic integrals corresponding to modulus \( k \)
+        real(real64) :: tmp
 
 
 
@@ -128,9 +200,21 @@ module elliptic_k_using_agm_fortran
 
         else if (abs_k .lt. 1.0_real64) then
 
-            cmp_k    = sqrt( (1.0_real64 - k) * (1.0_real64 + k) )
-            agm_k    = arithmetic_geometric_mean_kernel( 1.0_real64, cmp_k )
-            integral = half_pi_real64 / agm_k
+            cmp_k = sqrt( (1.0_real64 - k) * (1.0_real64 + k) )
+
+            if ( (k * k) .lt. 0.5_real64 ) then
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_real64, cmp_k)
+                integral = half_pi_real64 / agm_k
+
+            else
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_real64, k)
+                tmp      = half_pi_real64 / agm_k
+                nom_k    = elliptic_nome_auto(cmp_k)
+                integral = mns_inv_pi_real64 * tmp * log(nom_k)
+
+            end if
 
         else
 
@@ -143,18 +227,33 @@ module elliptic_k_using_agm_fortran
 
 
     elemental function elliptic_k_real128(k) result(integral)
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(real128), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(real128) :: integral ! return value
+        real(real128) :: integral !! \( K(k) \)
 
 
 
         real(real128) :: abs_k
         real(real128) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(real128) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
+        real(real128) :: nom_k !! nome \( q \) for elliptic integrals corresponding to modulus \( k \)
+        real(real128) :: tmp
 
 
 
@@ -178,9 +277,21 @@ module elliptic_k_using_agm_fortran
 
         else if (abs_k .lt. 1.0_real128) then
 
-            cmp_k    = sqrt( (1.0_real128 - k) * (1.0_real128 + k) )
-            agm_k    = arithmetic_geometric_mean_kernel( 1.0_real128, cmp_k )
-            integral = half_pi_real128 / agm_k
+            cmp_k = sqrt( (1.0_real128 - k) * (1.0_real128 + k) )
+
+            if ( (k * k) .lt. 0.5_real128 ) then
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_real128, cmp_k)
+                integral = half_pi_real128 / agm_k
+
+            else
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_real128, k)
+                tmp      = half_pi_real128 / agm_k
+                nom_k    = elliptic_nome_auto(cmp_k)
+                integral = mns_inv_pi_real128 * tmp * log(nom_k)
+
+            end if
 
         else
 

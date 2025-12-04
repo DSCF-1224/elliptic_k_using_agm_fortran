@@ -7,6 +7,8 @@ program ${PROGRAM_NAME}$
     use, intrinsic :: iso_fortran_env, only: ${REAL_KIND}$
 #:endfor
 
+    use, intrinsic :: ieee_arithmetic, only: ieee_next_after
+
     use, non_intrinsic :: elliptic_k_using_agm_fortran
 
 
@@ -117,6 +119,8 @@ program ${PROGRAM_NAME}$
 
         real(${REAL_KIND}$) :: k
 
+        real(${REAL_KIND}$) :: maxval_k
+
         real(${REAL_KIND}$) :: ulp_error
 
         real(${REAL_KIND}$) :: ulp_error_abs
@@ -135,6 +139,7 @@ program ${PROGRAM_NAME}$
 
         flag_error_stop = .false.
         line            = 0
+        maxval_k        = ieee_next_after(x = 1.0_${REAL_KIND}$, y = 0.0_${REAL_KIND}$)
 
 
 
@@ -156,63 +161,57 @@ program ${PROGRAM_NAME}$
 
 
 
-            line = line + 1
+            line           = line + 1
+
+            elliptic_k_cal = elliptic_k(k)
+            elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
+            ulp_error      = elliptic_k_dif / spacing(elliptic_k_ref)
+            ulp_error_abs  = abs(ulp_error)
 
 
 
-            if ( (1 - k) .ge. epsilon(k) ) then
+            if ( ulp_error_abs .gt. 2.0_${REAL_KIND}$ ) then
 
-                elliptic_k_cal = elliptic_k(k)
-                elliptic_k_dif = elliptic_k_cal -         elliptic_k_ref
-                ulp_error      = elliptic_k_dif / spacing(elliptic_k_ref)
-                ulp_error_abs  = abs(ulp_error)
-
-
-
-                if ( ulp_error_abs .gt. 2.0_${REAL_KIND}$ ) then
-
-                    if ( ulp_error_abs .gt. 10.0_${REAL_KIND}$ ) then
-
-                        write( unit = error_unit, fmt = * ) &!
-                            'FAIL: Unacceptable error'
-
-                        flag_error_stop = .true.
-
-                    else
-
-                        write( unit = error_unit, fmt = * ) &!
-                            'WARNING: Large ULP error'
-
-                    end if
-
-
+                if ( ulp_error_abs .gt. 10.0_${REAL_KIND}$ ) then
 
                     write( unit = error_unit, fmt = * ) &!
-                        'k               = ' , k
+                        'FAIL: Unacceptable error'
+
+                    flag_error_stop = .true.
+
+                else
 
                     write( unit = error_unit, fmt = * ) &!
-                        'line            = ' , line
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(ref) = ' ,  elliptic_k_ref
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'elliptic_k(cal) = ' ,  elliptic_k_cal
-
-                    write( unit = error_unit, fmt = * ) &!
-                        'ULP error       = ' ,  ulp_error
-
-
-
-                    if (flag_error_stop) error stop
+                        'WARNING: Large ULP error'
 
                 end if
 
-            else
 
-                cycle
+
+                write( unit = error_unit, fmt = * ) &!
+                    'k               = ' , k
+
+                write( unit = error_unit, fmt = * ) &!
+                    'line            = ' , line
+
+                write( unit = error_unit, fmt = * ) &!
+                    'elliptic_k(ref) = ' ,  elliptic_k_ref
+
+                write( unit = error_unit, fmt = * ) &!
+                    'elliptic_k(cal) = ' ,  elliptic_k_cal
+
+                write( unit = error_unit, fmt = * ) &!
+                    'ULP error       = ' ,  ulp_error
+
+
+
+                if (flag_error_stop) error stop
 
             end if
+
+
+
+            if (k .ge. maxval_k) exit
 
         end do
 

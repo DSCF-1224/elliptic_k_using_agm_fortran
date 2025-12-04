@@ -2,7 +2,23 @@
 #:set INTERFACE_NAME = 'elliptic_k'
 #:set MODULE_NAME = INTERFACE_NAME + '_using_agm_fortran'
 module ${MODULE_NAME}$
-    !! A Fortran library for computing the complete elliptic integral of the first kind using AGM
+    !! A Fortran library for computing the complete elliptic integral of the first kind \( K(k) \)
+    !! using arithmetic-geometric mean (AGM)
+    !! 
+    !! \( K(k) \) is defined as
+    !! $$
+    !! K (k) := \int_{ 0 }^{ \pi / 2 } \frac{ d \theta }{ \sqrt{ 1 - { k }^{ 2 } \sin^{ 2 } \theta } } 
+    !! $$
+    !! where \( k \) is the elliptic modulus.
+    !!
+    !! @note
+    !! - 山内二郎, 宇野利雄, 一松信 共編  
+    !!   電子計算機のための数値計算法 3  
+    !!   培風館, 1972.  
+    !!   数理科学シリーズ ; 5  
+    !!   [NDLサーチ](https://ndlsearch.ndl.go.jp/books/R100000039-I2422322)
+    !! - [Elliptic integral#Complete elliptic integral of the first kind - Wikipedia](https://en.wikipedia.org/wiki/Elliptic_integral#Complete_elliptic_integral_of_the_first_kind)
+    !! @endnote
 
 #:for REAL_KIND in REAL_KINDS
     use, intrinsic :: iso_fortran_env, only: ${REAL_KIND}$
@@ -14,6 +30,8 @@ module ${MODULE_NAME}$
     use, intrinsic :: ieee_arithmetic, only: ieee_value
 
     use, non_intrinsic :: arithmetic_geometric_mean_fortran
+
+    use, non_intrinsic :: elliptic_nome_fortran
 
 
 
@@ -29,9 +47,22 @@ module ${MODULE_NAME}$
 
 #:include 'half_pi.fypp'
 
+#:set MAXVAL_LEN = 0
+#:for REAL_KIND in REAL_KINDS
+    #:set MAXVAL_LEN = max( MAXVAL_LEN, len(REAL_KIND) )
+#:endfor
+#:for REAL_KIND in REAL_KINDS
+    #:set REAL_KIND_LJUST = REAL_KIND.ljust(MAXVAL_LEN)
+    real( ${REAL_KIND_LJUST}$ ), parameter :: mns_inv_pi_${REAL_KIND_LJUST}$ = -0.318309886183790671537767526745028724069_${REAL_KIND}$
+#:endfor
+#:del MAXVAL_LEN
+#:del REAL_KIND_LJUST
+
+
 
 
     interface ${INTERFACE_NAME}$
+    #:include 'elliptic_k_description.fypp'
     #:for REAL_KIND in REAL_KINDS
         module procedure :: ${INTERFACE_NAME}$_${REAL_KIND}$
     #:endfor
@@ -46,18 +77,27 @@ module ${MODULE_NAME}$
 
     #:set FUNCTION_NAME = INTERFACE_NAME + '_' + REAL_KIND
     elemental function ${FUNCTION_NAME}$(k) result(integral)
+    #:include 'elliptic_k_description.fypp'
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(${REAL_KIND}$), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(${REAL_KIND}$) :: integral ! return value
+        real(${REAL_KIND}$) :: integral !! \( K(k) \)
 
 
 
         real(${REAL_KIND}$) :: abs_k
         real(${REAL_KIND}$) :: agm_k !! \( \text{AGM}( 1, { k }^{ \prime } ) \)
         real(${REAL_KIND}$) :: cmp_k !! \( { k }^{ \prime } := \sqrt{ 1 - { k }^{ 2 } } \)
+        real(${REAL_KIND}$) :: nom_k !! nome \( q \) for elliptic integrals corresponding to modulus \( k \)
+        real(${REAL_KIND}$) :: tmp
 
 
 
@@ -81,9 +121,21 @@ module ${MODULE_NAME}$
 
         else if (abs_k .lt. 1.0_${REAL_KIND}$) then
 
-            cmp_k    = sqrt( (1.0_${REAL_KIND}$ - k) * (1.0_${REAL_KIND}$ + k) )
-            agm_k    = arithmetic_geometric_mean_kernel( 1.0_${REAL_KIND}$, cmp_k )
-            integral = half_pi_${REAL_KIND}$ / agm_k
+            cmp_k = sqrt( (1.0_${REAL_KIND}$ - k) * (1.0_${REAL_KIND}$ + k) )
+
+            if ( (k * k) .lt. 0.5_${REAL_KIND}$ ) then
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_${REAL_KIND}$, cmp_k)
+                integral = half_pi_${REAL_KIND}$ / agm_k
+
+            else
+
+                agm_k    = arithmetic_geometric_mean_kernel(1.0_${REAL_KIND}$, k)
+                tmp      = half_pi_${REAL_KIND}$ / agm_k
+                nom_k    = elliptic_nome_auto(cmp_k)
+                integral = mns_inv_pi_${REAL_KIND}$ * tmp * log(nom_k)
+
+            end if
 
         else
 
