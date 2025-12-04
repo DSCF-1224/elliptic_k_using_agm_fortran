@@ -1,5 +1,21 @@
 module elliptic_k_using_agm_fortran
-    !! A Fortran library for computing the complete elliptic integral of the first kind using AGM
+    !! A Fortran library for computing the complete elliptic integral of the first kind \( K(k) \)
+    !! using arithmetic-geometric mean (AGM)
+    !! 
+    !! \( K(k) \) is defined as
+    !! $$
+    !! K (k) := \int_{ 0 }^{ \pi / 2 } \frac{ d \theta }{ \sqrt{ 1 - { k }^{ 2 } \sin^{ 2 } \theta } } 
+    !! $$
+    !! where \( k \) is the elliptic modulus.
+    !!
+    !! @note
+    !! - 山内二郎, 宇野利雄, 一松信 共編  
+    !!   電子計算機のための数値計算法 3  
+    !!   培風館, 1972.  
+    !!   数理科学シリーズ ; 5  
+    !!   [NDLサーチ](https://ndlsearch.ndl.go.jp/books/R100000039-I2422322)
+    !! - [Elliptic integral#Complete elliptic integral of the first kind - Wikipedia](https://en.wikipedia.org/wiki/Elliptic_integral#Complete_elliptic_integral_of_the_first_kind)
+    !! @endnote
 
     use, intrinsic :: iso_fortran_env, only: real32
     use, intrinsic :: iso_fortran_env, only: real64
@@ -38,6 +54,13 @@ module elliptic_k_using_agm_fortran
 
 
     interface elliptic_k
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
         module procedure :: elliptic_k_real32
         module procedure :: elliptic_k_real64
         module procedure :: elliptic_k_real128
@@ -50,12 +73,25 @@ module elliptic_k_using_agm_fortran
 
 
     elemental function elliptic_k_real32(k) result(integral)
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(real32), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(real32) :: integral ! return value
+        real(real32) :: integral !! \( K(k) \)
 
 
 
@@ -114,12 +150,25 @@ module elliptic_k_using_agm_fortran
 
 
     elemental function elliptic_k_real64(k) result(integral)
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(real64), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(real64) :: integral ! return value
+        real(real64) :: integral !! \( K(k) \)
 
 
 
@@ -178,12 +227,25 @@ module elliptic_k_using_agm_fortran
 
 
     elemental function elliptic_k_real128(k) result(integral)
+        !! Compute the complete elliptic integral of the first kind \( K(k) \) using AGM
+        !! 
+        !! @warning
+        !! - The elliptic modulus \( k \) must satisfy \( |k| \le 1 \)
+        !! - Returns `ieee_quiet_nan`    for \( |k| > 1 \)
+        !! - Returns `ieee_positive_inf` for \( |k| = 1 \)
+        !! @endwarning
+        !! 
+        !! @note
+        !! Dependencies:
+        !! [`arithmetic_geometric_mean_kernel`](https://dscf-1224.github.io/arithmetic_geometric_mean_fortran/interface/arithmetic_geometric_mean_kernel.html),
+        !! [`elliptic_nome_auto`](https://dscf-1224.github.io/elliptic_nome_fortran/interface/elliptic_nome_auto.html)
+        !! @endnote
 
         real(real128), intent(in) :: k !! elliptic modulus \( k \)
 
 
 
-        real(real128) :: integral ! return value
+        real(real128) :: integral !! \( K(k) \)
 
 
 
