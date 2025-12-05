@@ -180,3 +180,9 @@ jobs:
 
       - name: Generate the documentation
         run: ford ford.md
+
+      - name: Upload documentation files as artifact
+        id: upload-pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: doc
