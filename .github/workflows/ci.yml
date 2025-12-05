@@ -177,3 +177,6 @@ jobs:
         with:
           name: src-f90
           path: src
+
+      - name: Generate the documentation
+        run: ford ford.md
