@@ -44,12 +44,19 @@ elliptic_k_using_agm_fortran = { git = "https://github.com/DSCF-1224/elliptic_k_
 1. Download `.f90` files in [`arithmetic_geometric_mean_fortran`][arithmetic_geometric_mean_fortran], [`elliptic_nome_fortran`][elliptic_nome_fortran] and [`elliptic_k_using_agm_fortran.f90`](src/elliptic_k_using_agm_fortran.f90)
 2. Include them in your compilation
 
-
-[arithmetic_geometric_mean_fortran]: https://github.com/DSCF-1224/arithmetic_geometric_mean_fortran
-[elliptic_nome_fortran]: https://github.com/DSCF-1224/elliptic_nome_fortran
-
 ## Documentation 
 
 [![Documentation](https://img.shields.io/badge/ford-Documentation%20-blueviolet.svg)](https://dscf-1224.github.io/elliptic_k_using_agm_fortran/)
+
+## Reference
+
+- 山内二郎, 宇野利雄, 一松信 共編  
+  電子計算機のための数値計算法 3  
+  培風館, 1972.  
+  数理科学シリーズ ; 5  
+  [NDLサーチ](https://ndlsearch.ndl.go.jp/books/R100000039-I2422322)
+
+[arithmetic_geometric_mean_fortran]: https://github.com/DSCF-1224/arithmetic_geometric_mean_fortran
+[elliptic_nome_fortran]: https://github.com/DSCF-1224/elliptic_nome_fortran
 
 <!-- EOF -->
